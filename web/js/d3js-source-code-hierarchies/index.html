@@ -1,0 +1,654 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>d3.js源码分析之Hierarchies | arlendp&#39;s blog</title>
+    <meta name="author" content="arlendp">
+    
+    <meta name="description" content="一个分享web前端技术的个人博客">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="d3.js源码分析之Hierarchies"/>
+    <meta property="og:site_name" content="arlendp"/>
+
+    
+    <meta property="og:image" content=""/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="arlendp" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="cyan">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">arlendp</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav cyan darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://tva2.sinaimg.cn/crop.0.0.720.720.180/ba00f58bjw8ewfzppyd46j20k00k03zn.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">arlendp</p>
+                        <p class="desc">Web前端</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav cyan darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Web开发/">
+                    Web开发 <span class="right">15 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-1" collapse-level="1">
+                <a class="no-padding" href="/categories/Web开发/JS/">
+                    JS <span class="right">13 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-1" collapse-level="1">
+                <a class="no-padding" href="/categories/Web开发/CSS/">
+                    CSS <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-1" collapse-level="1">
+                <a class="no-padding" href="/categories/Web开发/HTML/">
+                    HTML <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Git/">
+                    Git <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper cyan">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/Web开发/">Web开发</a><a class="breadcrumb" href="/categories/Web开发/JS/">JS</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>d3.js源码分析之Hierarchies</h1>
+    
+
+
+            </div>
+            <time class="orange-link-context" datetime="2016-10-17T16:00:00.000Z"><a href="/web/js/d3js-source-code-hierarchies/">2016-10-18</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Web开发/" class="chip orange">Web开发</a>
+        
+            <a href="/tags/D3-js/" class="chip orange">D3.js</a>
+        
+    </div>
+
+
+            <div class="toc orange-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Hierarchy"><span class="section table-of-contents-text">Hierarchy</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-hierarchy"><span class="section table-of-contents-text">d3.hierarchy</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Stratify"><span class="section table-of-contents-text">Stratify</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Cluster"><span class="section table-of-contents-text">Cluster</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Tree"><span class="section table-of-contents-text">Tree</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Treemap"><span class="section table-of-contents-text">Treemap</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-treemapSquarify"><span class="section table-of-contents-text">d3.treemapSquarify</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-treemapBinary"><span class="section table-of-contents-text">d3.treemapBinary</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Partition"><span class="section table-of-contents-text">Partition</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Pack"><span class="section table-of-contents-text">Pack</span></a></li></ol>
+</div>
+
+
+            <div class="entry orange-link-context">
+                <p>d3的hierarchy模块用于层级图的计算，会将输入的数据计算并转换成指定的层级格式提供给开发者使用。为了表示这种数据间的层级关系，该模块在内部使用了四叉树这种数据结构。<br><a id="more"></a></p>
+<h2 id="Hierarchy"><a href="#Hierarchy" class="headerlink" title="Hierarchy"></a>Hierarchy</h2><p>用于计算层级数据，在层级图中使用。</p>
+<h3 id="d3-hierarchy"><a href="#d3-hierarchy" class="headerlink" title="d3.hierarchy"></a>d3.hierarchy</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">   * 处理层级数据</span><br><span class="line">   * @param  &#123;object&#125; data     输入的数据</span><br><span class="line">   * @param  &#123;function&#125; children 用于获取data中的children数据的函数</span><br><span class="line">   * @return &#123;object&#125;          处理后的层级数据</span><br><span class="line">   */</span><br><span class="line">function hierarchy(data, children) &#123;</span><br><span class="line">    var root = new Node(data),</span><br><span class="line">        valued = +data.value &amp;&amp; (root.value = data.value),</span><br><span class="line">        node,</span><br><span class="line">        nodes = [root],</span><br><span class="line">        child,</span><br><span class="line">        childs,</span><br><span class="line">        i,</span><br><span class="line">        n;</span><br><span class="line"></span><br><span class="line">    if (children == null) children = defaultChildren;</span><br><span class="line">    //先处理父节点，后处理子节点，构造成node对象</span><br><span class="line">    while (node = nodes.pop()) &#123;</span><br><span class="line">      if (valued) node.value = +node.data.value;</span><br><span class="line">      if ((childs = children(node.data)) &amp;&amp; (n = childs.length)) &#123;</span><br><span class="line">        node.children = new Array(n);</span><br><span class="line">        for (i = n - 1; i &gt;= 0; --i) &#123;</span><br><span class="line">          nodes.push(child = node.children[i] = new Node(childs[i]));</span><br><span class="line">          child.parent = node;</span><br><span class="line">          child.depth = node.depth + 1;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return root.eachBefore(computeHeight);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>node用于表示hierarchy中的节点对象。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">/* node构造函数</span><br><span class="line">   * data: 该node相关联的数据</span><br><span class="line">   * depth: 该节点所在的层级数，根节点为0，子节点逐渐递增</span><br><span class="line">   * height: 该节点与其最远的子节点之间的距离，叶子节点为0</span><br><span class="line">   * parent: 该节点的父节点</span><br><span class="line">   */</span><br><span class="line">function Node(data) &#123;</span><br><span class="line">    this.data = data;</span><br><span class="line">    this.depth =</span><br><span class="line">    this.height = 0;</span><br><span class="line">    this.parent = null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>node的原型方法:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">//返回当前节点的所有父级节点，以当前节点开始逐级向上查找直至根节点</span><br><span class="line">  function node_ancestors() &#123;</span><br><span class="line">    var node = this, nodes = [node];</span><br><span class="line">    while (node = node.parent) &#123;</span><br><span class="line">      nodes.push(node);</span><br><span class="line">    &#125;</span><br><span class="line">    return nodes;</span><br><span class="line">  &#125;</span><br><span class="line">  //返回当前节点的所有子节点，包括当前节点</span><br><span class="line">  function node_descendants() &#123;</span><br><span class="line">    var nodes = [];</span><br><span class="line">    this.each(function(node) &#123;</span><br><span class="line">      nodes.push(node);</span><br><span class="line">    &#125;);</span><br><span class="line">    return nodes;</span><br><span class="line">  &#125;</span><br><span class="line">  //返回当前节点包含的所有叶子节点</span><br><span class="line">  function node_leaves() &#123;</span><br><span class="line">    var leaves = [];</span><br><span class="line">    this.eachBefore(function(node) &#123;</span><br><span class="line">      if (!node.children) &#123;</span><br><span class="line">        leaves.push(node);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    return leaves;</span><br><span class="line">  &#125;</span><br><span class="line">  //以节点的父节点和本身构成一个新的对象，返回包含所有该种对象的数组</span><br><span class="line">  function node_links() &#123;</span><br><span class="line">    var root = this, links = [];</span><br><span class="line">    root.each(function(node) &#123;</span><br><span class="line">      if (node !== root) &#123; // Don’t include the root’s parent, if any.</span><br><span class="line">        links.push(&#123;source: node.parent, target: node&#125;);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    return links;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>根据node的不同的遍历方式而有不同的方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">//广度优先？？？</span><br><span class="line">  function node_each(callback) &#123;</span><br><span class="line">    var node = this, current, next = [node], children, i, n;</span><br><span class="line">    do &#123;</span><br><span class="line">      current = next.reverse(), next = [];</span><br><span class="line">      while (node = current.pop()) &#123;</span><br><span class="line">        callback(node), children = node.children;</span><br><span class="line">        if (children) for (i = 0, n = children.length; i &lt; n; ++i) &#123;</span><br><span class="line">          next.push(children[i]);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; while (next.length);</span><br><span class="line">    return this;</span><br><span class="line">  &#125;</span><br><span class="line">  // 先处理回调函数，后访问子节点</span><br><span class="line">  function node_eachBefore(callback) &#123;</span><br><span class="line">    var node = this, nodes = [node], children, i;</span><br><span class="line">    while (node = nodes.pop()) &#123;</span><br><span class="line">      callback(node), children = node.children;</span><br><span class="line">      if (children) for (i = children.length - 1; i &gt;= 0; --i) &#123;</span><br><span class="line">        nodes.push(children[i]);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return this;</span><br><span class="line">  &#125;</span><br><span class="line">  //先访问所有节点，之后逐个执行回调</span><br><span class="line">  function node_eachAfter(callback) &#123;</span><br><span class="line">    var node = this, nodes = [node], next = [], children, i, n;</span><br><span class="line">    while (node = nodes.pop()) &#123;</span><br><span class="line">      next.push(node), children = node.children;</span><br><span class="line">      if (children) for (i = 0, n = children.length; i &lt; n; ++i) &#123;</span><br><span class="line">        nodes.push(children[i]);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    while (node = next.pop()) &#123;</span><br><span class="line">      callback(node);</span><br><span class="line">    &#125;</span><br><span class="line">    return this;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>而在这些遍历方法的基础上构造出来的方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">//通过value函数对每个节点的data进行计算，节点的value值为其自己的value值加上所有子节点的value值之和。</span><br><span class="line">  function node_sum(value) &#123;</span><br><span class="line">    return this.eachAfter(function(node) &#123;</span><br><span class="line">      var sum = +value(node.data) || 0,</span><br><span class="line">          children = node.children,</span><br><span class="line">          i = children &amp;&amp; children.length;</span><br><span class="line">      while (--i &gt;= 0) sum += children[i].value;</span><br><span class="line">      node.value = sum;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  //对所有节点的子节点进行排序，内部调用Array的原型链方法</span><br><span class="line">  function node_sort(compare) &#123;</span><br><span class="line">    return this.eachBefore(function(node) &#123;</span><br><span class="line">      if (node.children) &#123;</span><br><span class="line">        node.children.sort(compare);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  //计算当前node到end的最短路径，返回的数组从当前节点的父节点开始到公共节点，然后到目标节点</span><br><span class="line">  function node_path(end) &#123;</span><br><span class="line">    var start = this,</span><br><span class="line">        ancestor = leastCommonAncestor(start, end),</span><br><span class="line">        nodes = [start];</span><br><span class="line">    //从start开始向上查找至ancestor</span><br><span class="line">    while (start !== ancestor) &#123;</span><br><span class="line">      start = start.parent;</span><br><span class="line">      nodes.push(start);</span><br><span class="line">    &#125;</span><br><span class="line">    var k = nodes.length;</span><br><span class="line">    while (end !== ancestor) &#123;</span><br><span class="line"></span><br><span class="line">      nodes.splice(k, 0, end);</span><br><span class="line">      end = end.parent;</span><br><span class="line">    &#125;</span><br><span class="line">    return nodes;</span><br><span class="line">  &#125;</span><br><span class="line">  //返回最近的相同的祖先节点</span><br><span class="line">  function leastCommonAncestor(a, b) &#123;</span><br><span class="line">    if (a === b) return a;</span><br><span class="line">    var aNodes = a.ancestors(),</span><br><span class="line">        bNodes = b.ancestors(),</span><br><span class="line">        c = null;</span><br><span class="line">    a = aNodes.pop();</span><br><span class="line">    b = bNodes.pop();</span><br><span class="line">    while (a === b) &#123;</span><br><span class="line">      c = a;</span><br><span class="line">      a = aNodes.pop();</span><br><span class="line">      b = bNodes.pop();</span><br><span class="line">    &#125;</span><br><span class="line">    return c;</span><br><span class="line">  &#125;</span><br><span class="line">  //复制一份相同的node</span><br><span class="line">  function node_copy() &#123;</span><br><span class="line">    return hierarchy(this).eachBefore(copyData);</span><br><span class="line">  &#125;</span><br><span class="line">  function copyData(node) &#123;</span><br><span class="line">    node.data = node.data.data;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Stratify"><a href="#Stratify" class="headerlink" title="Stratify"></a>Stratify</h2><p>将数据转化为层级形式。若数据格式已经是如下形式:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">var data = &#123;</span><br><span class="line">        &quot;name&quot;: &quot;中国&quot;,</span><br><span class="line">        &quot;children&quot;: [&#123;</span><br><span class="line">                &quot;name&quot;: &quot;浙江&quot;,</span><br><span class="line">                &quot;children&quot;: [&#123;</span><br><span class="line">                    &quot;name&quot;: &quot;杭州&quot;</span><br><span class="line">                &#125;, &#123;</span><br><span class="line">                    &quot;name&quot;: &quot;宁波&quot;</span><br><span class="line">                &#125;, &#123;</span><br><span class="line">                    &quot;name&quot;: &quot;温州&quot;</span><br><span class="line">                &#125;, &#123;</span><br><span class="line">                    &quot;name&quot;: &quot;绍兴&quot;</span><br><span class="line">                &#125;]</span><br><span class="line">            &#125;,</span><br><span class="line"></span><br><span class="line">            &#123;</span><br><span class="line">                &quot;name&quot;: &quot;广西&quot;,</span><br><span class="line">                &quot;children&quot;: [&#123;</span><br><span class="line">                    &quot;name&quot;: &quot;桂林&quot;</span><br><span class="line">                &#125;, &#123;</span><br><span class="line">                    &quot;name&quot;: &quot;南宁&quot;</span><br><span class="line">                &#125;, &#123;</span><br><span class="line">                    &quot;name&quot;: &quot;柳州&quot;</span><br><span class="line">                &#125;, &#123;</span><br><span class="line">                    &quot;name&quot;: &quot;防城港&quot;</span><br><span class="line">                &#125;]</span><br><span class="line">            &#125;]</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>则可以直接传入上述<code>d3.hierarchy</code>方法来构造层级数据。若不是则用<code>d3.stratify</code>方法来处理，其关键部分是’id’和’parentId’方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">//d3.stratify</span><br><span class="line">function stratify() &#123;</span><br><span class="line">    var id = defaultId,</span><br><span class="line">        parentId = defaultParentId;</span><br><span class="line"></span><br><span class="line">    function stratify(data) &#123;</span><br><span class="line">      var d,</span><br><span class="line">          i,</span><br><span class="line">          n = data.length,</span><br><span class="line">          root,</span><br><span class="line">          parent,</span><br><span class="line">          node,</span><br><span class="line">          nodes = new Array(n),</span><br><span class="line">          nodeId,</span><br><span class="line">          nodeKey,</span><br><span class="line">          nodeByKey = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">      for (i = 0; i &lt; n; ++i) &#123;</span><br><span class="line">        //将data中每个数据构造成node对象</span><br><span class="line">        d = data[i], node = nodes[i] = new Node(d);</span><br><span class="line">        //根据id函数获取data的id</span><br><span class="line">        if ((nodeId = id(d, i, data)) != null &amp;&amp; (nodeId += &quot;&quot;)) &#123;</span><br><span class="line">          nodeKey = keyPrefix$1 + (node.id = nodeId);</span><br><span class="line">          nodeByKey[nodeKey] = nodeKey in nodeByKey ? ambiguous : node;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      for (i = 0; i &lt; n; ++i) &#123;</span><br><span class="line">        node = nodes[i], nodeId = parentId(data[i], i, data);</span><br><span class="line">        //parentId为空时认为该node为根节点，但只能存在一个parentId为空的节点</span><br><span class="line">        if (nodeId == null || !(nodeId += &quot;&quot;)) &#123;</span><br><span class="line">          if (root) throw new Error(&quot;multiple roots&quot;);</span><br><span class="line">          root = node;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          parent = nodeByKey[keyPrefix$1 + nodeId];</span><br><span class="line">          //如果记录中没有parentId，则抛出异常</span><br><span class="line">          if (!parent) throw new Error(&quot;missing: &quot; + nodeId);</span><br><span class="line">          if (parent === ambiguous) throw new Error(&quot;ambiguous: &quot; + nodeId);</span><br><span class="line">          //将该节点添加至parentId对应节点的children属性中</span><br><span class="line">          if (parent.children) parent.children.push(node);</span><br><span class="line">          else parent.children = [node];</span><br><span class="line">          //为node节点添加parent属性</span><br><span class="line">          node.parent = parent;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      if (!root) throw new Error(&quot;no root&quot;);</span><br><span class="line">      root.parent = preroot;</span><br><span class="line">      //计算节点的depth和height值</span><br><span class="line">      root.eachBefore(function(node) &#123; node.depth = node.parent.depth + 1; --n; &#125;).eachBefore(computeHeight);</span><br><span class="line">      root.parent = null;</span><br><span class="line">      if (n &gt; 0) throw new Error(&quot;cycle&quot;);</span><br><span class="line"></span><br><span class="line">      return root;</span><br><span class="line">    &#125;</span><br><span class="line">    //设置获取id的函数</span><br><span class="line">    stratify.id = function(x) &#123;</span><br><span class="line">      return arguments.length ? (id = required(x), stratify) : id;</span><br><span class="line">    &#125;;</span><br><span class="line">    //设置获取父节点id的函数</span><br><span class="line">    stratify.parentId = function(x) &#123;</span><br><span class="line">      return arguments.length ? (parentId = required(x), stratify) : parentId;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    return stratify;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Cluster"><a href="#Cluster" class="headerlink" title="Cluster"></a>Cluster</h2><p>用于绘制集群图，它会将所有的叶子节点放置在相同的深度，即所有的叶子节点会对齐。这里返回的结果包含(x, y)坐标，即可以直接用于绘制。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">//d3.cluster</span><br><span class="line">function cluster() &#123;</span><br><span class="line">    var separation = defaultSeparation,</span><br><span class="line">        dx = 1,</span><br><span class="line">        dy = 1,</span><br><span class="line">        nodeSize = false;</span><br><span class="line"></span><br><span class="line">    function cluster(root) &#123;</span><br><span class="line">      var previousNode,</span><br><span class="line">          x = 0;</span><br><span class="line"></span><br><span class="line">      root.eachAfter(function(node) &#123;</span><br><span class="line">        var children = node.children;</span><br><span class="line">        if (children) &#123;</span><br><span class="line">          //计算非叶子节点的x、y坐标，与其子节点相关</span><br><span class="line">          node.x = meanX(children);</span><br><span class="line">          node.y = maxY(children);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          // 如果是叶子节点，则其y坐标为0，x坐标则根据当前节点与前一个节点是否含有相同的父节点来设置</span><br><span class="line">          node.x = previousNode ? x += separation(node, previousNode) : 0;</span><br><span class="line">          node.y = 0;</span><br><span class="line">          previousNode = node;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      var left = leafLeft(root),</span><br><span class="line">          right = leafRight(root),</span><br><span class="line">          x0 = left.x - separation(left, right) / 2,</span><br><span class="line">          x1 = right.x + separation(right, left) / 2;</span><br><span class="line"></span><br><span class="line">      // 根据size大小对节点的x, y坐标进行调整</span><br><span class="line">      return root.eachAfter(nodeSize ? function(node) &#123;</span><br><span class="line">        //nodeSize为true时，将root放置于(0, 0)位置</span><br><span class="line">        node.x = (node.x - root.x) * dx;</span><br><span class="line">        node.y = (root.y - node.y) * dy;</span><br><span class="line">      &#125; : function(node) &#123;</span><br><span class="line">        //否则，按比例对节点坐标进行调整</span><br><span class="line">        node.x = (node.x - x0) / (x1 - x0) * dx;</span><br><span class="line">        node.y = (1 - (root.y ? node.y / root.y : 1)) * dy;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    //separation用于将相邻的叶子节点进行分离</span><br><span class="line">    cluster.separation = function(x) &#123;</span><br><span class="line">      return arguments.length ? (separation = x, cluster) : separation;</span><br><span class="line">    &#125;;</span><br><span class="line">    //以数组的形式设置cluster的范围大小</span><br><span class="line">    cluster.size = function(x) &#123;</span><br><span class="line">      return arguments.length ? (nodeSize = false, dx = +x[0], dy = +x[1], cluster) : (nodeSize ? null : [dx, dy]);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    cluster.nodeSize = function(x) &#123;</span><br><span class="line">      return arguments.length ? (nodeSize = true, dx = +x[0], dy = +x[1], cluster) : (nodeSize ? [dx, dy] : null);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    return cluster;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Tree"><a href="#Tree" class="headerlink" title="Tree"></a>Tree</h2><p>用于产生树状布局，以根节点位置为基准，逐级对齐。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<h2 id="Treemap"><a href="#Treemap" class="headerlink" title="Treemap"></a>Treemap</h2><p>用于产生矩形式树状结构图。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line">//d3.treemap</span><br><span class="line">function index$1() &#123;</span><br><span class="line">    var tile = squarify,</span><br><span class="line">        round = false,</span><br><span class="line">        dx = 1,</span><br><span class="line">        dy = 1,</span><br><span class="line">        paddingStack = [0],</span><br><span class="line">        paddingInner = constantZero,</span><br><span class="line">        paddingTop = constantZero,</span><br><span class="line">        paddingRight = constantZero,</span><br><span class="line">        paddingBottom = constantZero,</span><br><span class="line">        paddingLeft = constantZero;</span><br><span class="line"></span><br><span class="line">    function treemap(root) &#123;</span><br><span class="line">      root.x0 =</span><br><span class="line">      root.y0 = 0;</span><br><span class="line">      root.x1 = dx;</span><br><span class="line">      root.y1 = dy;</span><br><span class="line">      root.eachBefore(positionNode);</span><br><span class="line">      paddingStack = [0];</span><br><span class="line">      if (round) root.eachBefore(roundNode);</span><br><span class="line">      return root;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function positionNode(node) &#123;</span><br><span class="line">      var p = paddingStack[node.depth],</span><br><span class="line">          //将有效区域根据padding来缩小</span><br><span class="line">          x0 = node.x0 + p,</span><br><span class="line">          y0 = node.y0 + p,</span><br><span class="line">          x1 = node.x1 - p,</span><br><span class="line">          y1 = node.y1 - p;</span><br><span class="line">      //处理padding过大的情况</span><br><span class="line">      if (x1 &lt; x0) x0 = x1 = (x0 + x1) / 2;</span><br><span class="line">      if (y1 &lt; y0) y0 = y1 = (y0 + y1) / 2;</span><br><span class="line">      node.x0 = x0;</span><br><span class="line">      node.y0 = y0;</span><br><span class="line">      node.x1 = x1;</span><br><span class="line">      node.y1 = y1;</span><br><span class="line">      if (node.children) &#123;</span><br><span class="line">        p = paddingStack[node.depth + 1] = paddingInner(node) / 2;</span><br><span class="line">        //在调整了范围的基础上根据特定的padding再次进行调整</span><br><span class="line">        x0 += paddingLeft(node) - p;</span><br><span class="line">        y0 += paddingTop(node) - p;</span><br><span class="line">        x1 -= paddingRight(node) - p;</span><br><span class="line">        y1 -= paddingBottom(node) - p;</span><br><span class="line">        if (x1 &lt; x0) x0 = x1 = (x0 + x1) / 2;</span><br><span class="line">        if (y1 &lt; y0) y0 = y1 = (y0 + y1) / 2;</span><br><span class="line">        tile(node, x0, y0, x1, y1);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    treemap.round = function(x) &#123;</span><br><span class="line">      return arguments.length ? (round = !!x, treemap) : round;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    treemap.size = function(x) &#123;</span><br><span class="line">      return arguments.length ? (dx = +x[0], dy = +x[1], treemap) : [dx, dy];</span><br><span class="line">    &#125;;</span><br><span class="line">    //设置tile函数，默认是d3.treemapSquarify，即按黄金分割比进行划分</span><br><span class="line">    treemap.tile = function(x) &#123;</span><br><span class="line">      return arguments.length ? (tile = required(x), treemap) : tile;</span><br><span class="line">    &#125;;</span><br><span class="line">    //同时设置paddingInner和paddingOuter</span><br><span class="line">    treemap.padding = function(x) &#123;</span><br><span class="line">      return arguments.length ? treemap.paddingInner(x).paddingOuter(x) : treemap.paddingInner();</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    treemap.paddingInner = function(x) &#123;</span><br><span class="line">      return arguments.length ? (paddingInner = typeof x === &quot;function&quot; ? x : constant$5(+x), treemap) : paddingInner;</span><br><span class="line">    &#125;;</span><br><span class="line">    //paddingOuter是由四个方向的padding构成</span><br><span class="line">    treemap.paddingOuter = function(x) &#123;</span><br><span class="line">      return arguments.length ? treemap.paddingTop(x).paddingRight(x).paddingBottom(x).paddingLeft(x) : treemap.paddingTop();</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    treemap.paddingTop = function(x) &#123;</span><br><span class="line">      return arguments.length ? (paddingTop = typeof x === &quot;function&quot; ? x : constant$5(+x), treemap) : paddingTop;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    treemap.paddingRight = function(x) &#123;</span><br><span class="line">      return arguments.length ? (paddingRight = typeof x === &quot;function&quot; ? x : constant$5(+x), treemap) : paddingRight;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    treemap.paddingBottom = function(x) &#123;</span><br><span class="line">      return arguments.length ? (paddingBottom = typeof x === &quot;function&quot; ? x : constant$5(+x), treemap) : paddingBottom;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    treemap.paddingLeft = function(x) &#123;</span><br><span class="line">      return arguments.length ? (paddingLeft = typeof x === &quot;function&quot; ? x : constant$5(+x), treemap) : paddingLeft;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    return treemap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>d3.treemap</code>中会对node进行区块划分，其中主要是用到<code>tile</code>函数来实现模块划分的逻辑，默认是<code>d3.treemapSquarify</code>即按黄金分割比进行区块的分割。</p>
+<h3 id="d3-treemapSquarify"><a href="#d3-treemapSquarify" class="headerlink" title="d3.treemapSquarify"></a>d3.treemapSquarify</h3><p>通过黄金分割比来对treemap进行分割。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">//黄金分割比</span><br><span class="line">var phi = (1 + Math.sqrt(5)) / 2;</span><br><span class="line">//按黄金分割比对treenode区块进行划分</span><br><span class="line">var squarify = (function custom(ratio) &#123;</span><br><span class="line"></span><br><span class="line">    function squarify(parent, x0, y0, x1, y1) &#123;</span><br><span class="line">      squarifyRatio(ratio, parent, x0, y0, x1, y1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    squarify.ratio = function(x) &#123;</span><br><span class="line">      return custom((x = +x) &gt; 1 ? x : 1);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    return squarify;</span><br><span class="line">&#125;)(phi);</span><br><span class="line"></span><br><span class="line">function squarifyRatio(ratio, parent, x0, y0, x1, y1) &#123;</span><br><span class="line">    var rows = [],</span><br><span class="line">        nodes = parent.children,</span><br><span class="line">        row,</span><br><span class="line">        nodeValue,</span><br><span class="line">        i0 = 0,</span><br><span class="line">        i1,</span><br><span class="line">        n = nodes.length,</span><br><span class="line">        dx, dy,</span><br><span class="line">        value = parent.value,</span><br><span class="line">        sumValue,</span><br><span class="line">        minValue,</span><br><span class="line">        maxValue,</span><br><span class="line">        newRatio,</span><br><span class="line">        minRatio,</span><br><span class="line">        alpha,</span><br><span class="line">        beta;</span><br><span class="line"></span><br><span class="line">    while (i0 &lt; n) &#123;</span><br><span class="line">      dx = x1 - x0, dy = y1 - y0;</span><br><span class="line">      minValue = maxValue = sumValue = nodes[i0].value;</span><br><span class="line">      //根据长宽比和黄金分割比计算alpha，其值不受子节点影响</span><br><span class="line">      alpha = Math.max(dy / dx, dx / dy) / (value * ratio);</span><br><span class="line">      beta = sumValue * sumValue * alpha;</span><br><span class="line">      minRatio = Math.max(maxValue / beta, beta / minValue);</span><br><span class="line"></span><br><span class="line">      // 当ratio不增加时，添加node</span><br><span class="line">      for (i1 = i0 + 1; i1 &lt; n; ++i1) &#123;</span><br><span class="line">        sumValue += nodeValue = nodes[i1].value;</span><br><span class="line">        if (nodeValue &lt; minValue) minValue = nodeValue;</span><br><span class="line">        if (nodeValue &gt; maxValue) maxValue = nodeValue;</span><br><span class="line">        beta = sumValue * sumValue * alpha;</span><br><span class="line">        newRatio = Math.max(maxValue / beta, beta / minValue);</span><br><span class="line">        //不会添加使ratio增加的node，如果不满足退出循环</span><br><span class="line">        if (newRatio &gt; minRatio) &#123; sumValue -= nodeValue; break; &#125;</span><br><span class="line">        minRatio = newRatio;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      // 调整node的范围并确定分割的方向</span><br><span class="line">      rows.push(row = &#123;value: sumValue, dice: dx &lt; dy, children: nodes.slice(i0, i1)&#125;);</span><br><span class="line">      //当node区域长比宽短时</span><br><span class="line">      if (row.dice) treemapDice(row, x0, y0, x1, value ? y0 += dy * sumValue / value : y1);</span><br><span class="line">      //当node区域宽比长短时</span><br><span class="line">      else treemapSlice(row, x0, y0, value ? x0 += dx * sumValue / value : x1, y1);</span><br><span class="line">      //value等于剩余未分配位置的node的value之和，i0也从未分配的node开始</span><br><span class="line">      value -= sumValue, i0 = i1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return rows;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="d3-treemapBinary"><a href="#d3-treemapBinary" class="headerlink" title="d3.treemapBinary"></a>d3.treemapBinary</h3><p>将treemap区域根据value值大致进行二等分，使两边的value值之和尽量相近。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">//d3.treemapBinary</span><br><span class="line">function binary(parent, x0, y0, x1, y1) &#123;</span><br><span class="line">    var nodes = parent.children,</span><br><span class="line">        i, n = nodes.length,</span><br><span class="line">        sum, sums = new Array(n + 1);</span><br><span class="line"></span><br><span class="line">    for (sums[0] = sum = i = 0; i &lt; n; ++i) &#123;</span><br><span class="line">      sums[i + 1] = sum += nodes[i].value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    partition(0, n, parent.value, x0, y0, x1, y1);</span><br><span class="line"></span><br><span class="line">    function partition(i, j, value, x0, y0, x1, y1) &#123;</span><br><span class="line">      if (i &gt;= j - 1) &#123;</span><br><span class="line">        var node = nodes[i];</span><br><span class="line">        node.x0 = x0, node.y0 = y0;</span><br><span class="line">        node.x1 = x1, node.y1 = y1;</span><br><span class="line">        return;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      var valueOffset = sums[i],</span><br><span class="line">          //加上前面的已经计算过的value值作为偏移量，这样才能将sums[mid]跟valueTarget进行比较</span><br><span class="line">          valueTarget = (value / 2) + valueOffset,</span><br><span class="line">          k = i + 1,</span><br><span class="line">          hi = j - 1;</span><br><span class="line">      //二分法查找</span><br><span class="line">      while (k &lt; hi) &#123;</span><br><span class="line">        var mid = k + hi &gt;&gt;&gt; 1;</span><br><span class="line">        if (sums[mid] &lt; valueTarget) k = mid + 1;</span><br><span class="line">        else hi = mid;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      var valueLeft = sums[k] - valueOffset,</span><br><span class="line">          valueRight = value - valueLeft;</span><br><span class="line">      //当矩形较高时，进行上下分割</span><br><span class="line">      if ((y1 - y0) &gt; (x1 - x0)) &#123;</span><br><span class="line">        //根据左右的value和进行坐标划分</span><br><span class="line">        var yk = (y0 * valueRight + y1 * valueLeft) / value;</span><br><span class="line">        partition(i, k, valueLeft, x0, y0, x1, yk);</span><br><span class="line">        partition(k, j, valueRight, x0, yk, x1, y1);</span><br><span class="line">      &#125; </span><br><span class="line">      //否则进行左右分割</span><br><span class="line">      else &#123;</span><br><span class="line">        var xk = (x0 * valueRight + x1 * valueLeft) / value;</span><br><span class="line">        partition(i, k, valueLeft, x0, y0, xk, y1);</span><br><span class="line">        partition(k, j, valueRight, xk, y0, x1, y1);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Partition"><a href="#Partition" class="headerlink" title="Partition"></a>Partition</h2><p>节点以矩形区域的形式展现，节点间的相对位置可以看出其层级关系。同时区块的大小可以反映value值大小。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">//d3.partition</span><br><span class="line">function partition() &#123;</span><br><span class="line">    var dx = 1,</span><br><span class="line">        dy = 1,</span><br><span class="line">        padding = 0,</span><br><span class="line">        round = false;</span><br><span class="line"></span><br><span class="line">    function partition(root) &#123;</span><br><span class="line">      var n = root.height + 1;</span><br><span class="line">      root.x0 =</span><br><span class="line">      root.y0 = padding;</span><br><span class="line">      root.x1 = dx;</span><br><span class="line">      root.y1 = dy / n;</span><br><span class="line">      root.eachBefore(positionNode(dy, n));</span><br><span class="line">      if (round) root.eachBefore(roundNode);</span><br><span class="line">      return root;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function positionNode(dy, n) &#123;</span><br><span class="line">      return function(node) &#123;</span><br><span class="line">        if (node.children) &#123;</span><br><span class="line">          treemapDice(node, node.x0, dy * (node.depth + 1) / n, node.x1, dy * (node.depth + 2) / n);</span><br><span class="line">        &#125;</span><br><span class="line">        var x0 = node.x0,</span><br><span class="line">            y0 = node.y0,</span><br><span class="line">            //这里减去padding用于与下个兄弟节点分开</span><br><span class="line">            x1 = node.x1 - padding,</span><br><span class="line">            y1 = node.y1 - padding;</span><br><span class="line">        if (x1 &lt; x0) x0 = x1 = (x0 + x1) / 2;</span><br><span class="line">        if (y1 &lt; y0) y0 = y1 = (y0 + y1) / 2;</span><br><span class="line">        node.x0 = x0;</span><br><span class="line">        node.y0 = y0;</span><br><span class="line">        node.x1 = x1;</span><br><span class="line">        node.y1 = y1;</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    partition.round = function(x) &#123;</span><br><span class="line">      return arguments.length ? (round = !!x, partition) : round;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    partition.size = function(x) &#123;</span><br><span class="line">      return arguments.length ? (dx = +x[0], dy = +x[1], partition) : [dx, dy];</span><br><span class="line">    &#125;;</span><br><span class="line">    //padding用于将节点的相邻子节点分开</span><br><span class="line">    partition.padding = function(x) &#123;</span><br><span class="line">      return arguments.length ? (padding = +x, partition) : padding;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    return partition;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Pack"><a href="#Pack" class="headerlink" title="Pack"></a>Pack</h2><p>通过多个封闭圆来表现层级图。</p>
+
+                
+<p class="orange-link-context">
+    <a href="/web/js/d3js-source-code-dispatches/" rel="next" title="d3.js源码分析之Dispatches">
+    上一篇：d3.js源码分析之Dispatches
+  </a>
+</p>
+
+
+
+<p class="orange-link-context">
+    <a href="/web/js/d3js-source-code-quadtrees/" rel="next" title="d3.js源码分析之Quadtrees">
+    下一篇：d3.js源码分析之Quadtrees
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comment">
+        <div id="disqus_thread"></div>
+        <script>
+            var disqus_config = function() {
+                this.page.url = 'http://arlendp.me/web/js/d3js-source-code-hierarchies/';
+                this.page.identifier = 'web/js/d3js-source-code-hierarchies/';
+            };
+            (function() {
+                var d = document,
+                    s = d.createElement('script');
+                s.src = '//blog-arlendp-me.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', + new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+        </noscript>
+    </section>
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large orange">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse green"  data-activates="main-menu" title="菜单"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer cyan darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="https://github.com/arlendp" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright orange-link-context">
+        <div class="container">
+            © 2017 example.com, All rights reserved.
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('green lighten-2');
+
+            
+            // 添加new标签
+            $('').append('<span class="new badge pink"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword orange lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword orange lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+
+
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=57839780" charset="UTF-8"></script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>
